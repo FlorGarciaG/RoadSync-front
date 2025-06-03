@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { vehicleService } from "../../services/vehicleService";
+import { tipoIncidenciaOptions } from "../../utils/incidenciaTypes";
 
 const IncidenteForm = ({ onSave, initialData }) => {
   const [form, setForm] = useState({
@@ -97,15 +98,11 @@ const IncidenteForm = ({ onSave, initialData }) => {
           className="w-full pl-3 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7] bg-white text-[#1b0e0e]"
         >
           <option value="">Selecciona un tipo de incidencia</option>
-          <option value="robo">Robo</option>
-          <option value="simulacion_robo">Simulación de robo</option>
-          <option value="mercancia_ilegal">Transporte de mercancía ilegal</option>
-          <option value="accidente">Accidente de tránsito</option>
-          <option value="clonacion">Clonación de placas</option>
-          <option value="secuestro">Secuestro vehicular</option>
-          <option value="uso_no_autorizado">Uso no autorizado</option>
-          <option value="incidente_legal">Incidente legal</option>
-          <option value="uso_en_delito">Vehículo utilizado en delito</option>
+          {tipoIncidenciaOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
 

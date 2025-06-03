@@ -1,6 +1,6 @@
 import React from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { tipoMultaLabels } from "./MultaForm";
+import { tipoMultaLabels } from "../../utils/multaTypes";
 
 const MultaCard = ({ vehiculo, tipoMulta, monto, fecha, descripcion, onDelete, onEdit, hideActions }) => (
   <div className="bg-white shadow-lg rounded-2xl p-4 border border-[#f3e7e7] w-full max-w-sm transition-transform hover:scale-[1.01]">

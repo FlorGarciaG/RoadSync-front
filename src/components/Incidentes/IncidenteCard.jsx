@@ -1,18 +1,6 @@
 import React from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-
-const tipoIncidenciaLabels = {
-  robo: "Robo",
-  simulacion_robo: "Simulación de robo",
-  mercancia_ilegal: "Transporte de mercancía ilegal",
-  accidente: "Accidente de tránsito",
-  abandono: "Abandono",
-  clonacion: "Clonación de placas",
-  secuestro: "Secuestro vehicular",
-  uso_no_autorizado: "Uso no autorizado",
-  incidente_legal: "Incidente legal",
-  uso_en_delito: "Vehículo utilizado en delito",
-};
+import { tipoIncidenciaLabels } from "../../utils/incidenciaTypes";
 
 const IncidenteCard = ({
   vehiculo,
