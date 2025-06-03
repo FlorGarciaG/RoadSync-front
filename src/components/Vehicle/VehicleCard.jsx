@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Modal from "../Modal/Modal";
 import MultaCard from "../Multas/MultaCard";
 import IncidenteCard from "../Incidentes/IncidenteCard";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 
-const VehicleCard = ({ vehicle, multas = [], incidencias = [] }) => {
+const VehicleCard = ({ vehicle, multas = [], incidencias = [],  onEdit, onDelete }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null); // "multas" o "incidencias"
 
@@ -27,6 +28,22 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [] }) => {
           <h3 className="text-2xl font-bold text-[#4C0022] tracking-wide">
             {vehicle.placa}
           </h3>
+          <div className="flex gap-2">
+            <button
+              onClick={() => onEdit(vehicle)}
+              className="text-[#4C0022] hover:text-[#6a0040] transition-colors"
+              title="Editar"
+            >
+              <FiEdit size={20} />
+            </button>
+            <button
+              onClick={() => onDelete(vehicle)}
+              className="text-red-600 hover:text-red-800 transition-colors"
+              title="Eliminar"
+            >
+              <FiTrash2 size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Chips de Multas e Incidencias */}
@@ -70,7 +87,9 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [] }) => {
             {vehicle.tarjeta}
           </p>
           <p>
-            <span className="font-semibold text-[#4C0022]">Vencimiento Tarjeta:</span>{" "}
+            <span className="font-semibold text-[#4C0022]">
+              Vencimiento Tarjeta:
+            </span>{" "}
             {vehicle.tarjetaVencimiento}
           </p>
           <p>
@@ -85,7 +104,9 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [] }) => {
       {/* Modal informativo global */}
       <Modal isOpen={modalOpen} onClose={handleCloseModal}>
         <h2 className="text-xl font-bold mb-4 text-[#4C0022]">
-          {modalType === "multas" ? "Multas del Vehículo" : "Incidencias del Vehículo"}
+          {modalType === "multas"
+            ? "Multas del Vehículo"
+            : "Incidencias del Vehículo"}
         </h2>
         {modalData.length === 0 ? (
           <p className="text-gray-500">No hay información disponible.</p>

@@ -198,6 +198,17 @@ const Vehicles = () => {
     });
     if (result.isConfirmed) {
       try {
+        // Elimina multas asociadas
+        const multasToDelete = multas.filter(m => m.vehiculo?.idVehiculo === id);
+        for (const multa of multasToDelete) {
+          await multaService.delete(multa.idMulta);
+        }
+        // Elimina incidencias asociadas
+        const incidenciasToDelete = incidencias.filter(i => i.vehiculo?.idVehiculo === id);
+        for (const inc of incidenciasToDelete) {
+          await incidenteService.delete(inc.idIncidente);
+        }
+        // Ahora elimina el vehículo
         await vehicleService.delete(id);
         const updated = await vehicleService.getAll();
         setVehicles(updated);
