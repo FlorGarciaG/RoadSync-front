@@ -54,9 +54,18 @@ const Drivers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSend = { ...formData };
-    if (!dataToSend.rfc || dataToSend.rfc.trim() === "") {
-      delete dataToSend.rfc;
+
+    // Validar que la CURP esté presente
+    if (!dataToSend.curp || dataToSend.curp.trim() === "") {
+      Swal.fire("Campo requerido", "La CURP es obligatoria", "warning");
+      return;
     }
+
+    // Si no hay RFC, coloca el RFC genérico
+    if (!dataToSend.rfc || dataToSend.rfc.trim() === "") {
+      dataToSend.rfc = "XAXX010101000"; // RFC genérico nacional
+    }
+
     try {
       let response;
       if (editIndex !== null) {
