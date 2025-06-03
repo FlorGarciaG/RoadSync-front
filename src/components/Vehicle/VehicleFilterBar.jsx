@@ -16,8 +16,8 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
 
   const handleClearSearch = () => {
     setSearchTerm("");
-    setFilterMultas("");   // <-- Limpia el filtro de multas
-    setFilterRobado("");   // <-- Limpia el filtro de robado
+    setFilterMultas("");
+    setFilterRobado("");
     onApply({
       searchType,
       searchTerm: "",
@@ -31,7 +31,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
     setFilterRobado("");
   };
 
-  // Cambia aquí: muestra un alert si no hay resultados
   const handleApply = async () => {
     const result = await onApply({
       searchType,
@@ -40,8 +39,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
       filterRobado,
     });
     setShowFilters(false);
-
-    // Si el padre retorna un array vacío, muestra el alert
     if (Array.isArray(result) && result.length === 0) {
       Swal.fire(
         "Sin resultados",
@@ -58,12 +55,11 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
 
   const handleSearchTypeChange = (type) => {
     setSearchType(type);
-    setSearchTerm(""); // Limpia el input al cambiar el tipo de búsqueda
+    setSearchTerm("");
   };
 
   return (
     <div className="relative flex flex-wrap md:flex-nowrap items-center gap-2 w-full">
-      {/* Toggle de tipo de búsqueda */}
       <div className="flex gap-2">
         <button
           onClick={() => handleSearchTypeChange("placa")}
@@ -86,8 +82,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
           Buscar por propietario
         </button>
       </div>
-
-      {/* Input de búsqueda adaptativo */}
       <div className="flex flex-col w-full md:w-auto flex-grow">
         <div className="flex gap-2">
           <input
@@ -99,7 +93,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border rounded p-2 w-full"
           />
-          {/* Botón de filtro */}
           <button
             onClick={() => setShowFilters((prev) => !prev)}
             className="bg-gray-300 hover:bg-gray-400 p-2 rounded"
@@ -107,7 +100,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
           >
             <FaFilter className="text-gray-700" />
           </button>
-          {/* Botón de búsqueda */}
           <button
             className="bg-[#4C0022] text-white p-2 rounded hover:bg-[#6a0040]"
             onClick={handleApply}
@@ -115,7 +107,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
           >
             <FaSearch />
           </button>
-          {/* Botón de limpiar búsqueda */}
           <button
             className="bg-gray-300 text-[#4C0022] p-2 rounded hover:bg-gray-400 transition-colors"
             onClick={handleClearSearch}
@@ -125,8 +116,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
           </button>
         </div>
       </div>
-
-      {/* Panel de filtros */}
       {showFilters && (
         <div className="absolute top-full right-0 mt-2 bg-white border rounded shadow-lg p-4 w-80 z-10">
           <div className="mb-4">
@@ -141,7 +130,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
               <option value="false">No</option>
             </select>
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">¿Es robado?</label>
             <select
@@ -154,7 +142,6 @@ const VehicleFilterBar = ({ initialFilters, onApply, onCancel }) => {
               <option value="false">No</option>
             </select>
           </div>
-
           <div className="flex justify-end gap-2">
             <button
               onClick={handleCancel}

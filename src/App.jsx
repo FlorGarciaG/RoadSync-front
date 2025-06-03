@@ -11,7 +11,6 @@ function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  // Verificar autenticación al cargar la aplicación
   useEffect(() => {
     const checkAuth = () => {
       const user = localStorage.getItem("userData");
@@ -30,7 +29,6 @@ function App() {
         correo: loginData.email,
         password: loginData.password,
       });
-      // console.log("Resultado del login:", result);
       if (result.success) {
         setUserData(result.data);
         setAuthenticated(true);
@@ -65,26 +63,32 @@ function App() {
     );
   }
 
-  if (!authenticated) {
-    return <Login onLogin={handleLogin} />;
-  }
-
   return (
     <div className="flex bg-[#fcf8f8] min-h-screen">
-      <Sidebar
-        userRole={userData?.rol || "Administrador"}
-        onLogout={handleLogout}
-        collapsed={sidebarCollapsed}
-        toggleSidebar={toggleSidebar}
-        userData={userData}
-      />
+      {authenticated && (
+        <Sidebar
+          userRole={userData?.rol || "Administrador"}
+          onLogout={handleLogout}
+          collapsed={sidebarCollapsed}
+          toggleSidebar={toggleSidebar}
+          userData={userData}
+        />
+      )}
 
       <div
-        className={`flex-1 p-6 transition-all duration-300 ease-in-out ${
-          sidebarCollapsed ? "ml-20" : "ml-64"
+        className={`flex-1 transition-all duration-300 ease-in-out ${
+          authenticated
+            ? sidebarCollapsed
+              ? "ml-20"
+              : "ml-64"
+            : ""
         }`}
       >
-        <AppRoutes userData={userData} />
+        <AppRoutes
+          userData={userData}
+          authenticated={authenticated}
+          onLogin={handleLogin}
+        />
       </div>
     </div>
   );
