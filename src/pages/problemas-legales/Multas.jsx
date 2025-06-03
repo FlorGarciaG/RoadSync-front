@@ -38,12 +38,14 @@ const MultasPage = () => {
   }, [placa]);
 
   const handleAddMulta = async (nuevaMulta) => {
+    console.log("Nueva multa a agregar:", nuevaMulta);
     try {
       await multaService.create({
         vehiculo: { idVehiculo: nuevaMulta.vehiculo.idVehiculo },
         tipoMulta: nuevaMulta.tipoMulta,
         monto: nuevaMulta.monto,
         fecha: nuevaMulta.fecha,
+        descripcion: nuevaMulta.descripcion,
       });
       Swal.fire("Éxito", "Multa registrada correctamente", "success");
       const data = await multaService.getAll();
@@ -65,6 +67,7 @@ const MultasPage = () => {
         tipoMulta: multaEditada.tipoMulta,
         monto: multaEditada.monto,
         fecha: multaEditada.fecha,
+        descripcion: multaEditada.descripcion,
       });
       Swal.fire("Éxito", "Multa actualizada correctamente", "success");
       const data = await multaService.getAll();
@@ -212,6 +215,7 @@ const MultasPage = () => {
                 key={multa.idMulta}
                 vehiculo={multa.vehiculo}
                 tipoMulta={multa.tipoMulta}
+                descripcion={multa.descripcion}
                 monto={multa.monto}
                 fecha={multa.fecha}
                 onDelete={() => handleDeleteMulta(multa.idMulta)}

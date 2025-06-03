@@ -1,7 +1,8 @@
 import React from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { tipoMultaLabels } from "./MultaForm";
 
-const MultaCard = ({ vehiculo, tipoMulta, monto, fecha, onDelete, onEdit, hideActions }) => (
+const MultaCard = ({ vehiculo, tipoMulta, monto, fecha, descripcion, onDelete, onEdit, hideActions }) => (
   <div className="bg-white shadow-lg rounded-2xl p-4 border border-[#f3e7e7] w-full max-w-sm transition-transform hover:scale-[1.01]">
     <div className="flex items-center justify-between mb-2">
       <h3 className="text-lg font-bold text-[#4C0022]">
@@ -13,7 +14,10 @@ const MultaCard = ({ vehiculo, tipoMulta, monto, fecha, onDelete, onEdit, hideAc
     </div>
 
     <div className="text-sm text-gray-700 mb-1">
-      <strong>Tipo de multa:</strong> {tipoMulta}
+      <strong>Tipo de multa:</strong> {tipoMultaLabels[tipoMulta] || tipoMulta}
+    </div>
+    <div className="text-sm text-gray-700 mb-1">
+      <strong>Descripción:</strong> {descripcion}
     </div>
     <div className="text-sm text-gray-700 mb-3">
       <strong>Monto:</strong> ${monto} MXN

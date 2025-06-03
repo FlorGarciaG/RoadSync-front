@@ -3,12 +3,31 @@ import Select from "react-select";
 import { vehicleService } from "../../services/vehicleService";
 import { FaDollarSign } from "react-icons/fa";
 
+const tipoMultaOptions = [
+  { value: "exceso_velocidad", label: "Exceso de velocidad" },
+  { value: "estacionamiento_prohibido", label: "Estacionamiento prohibido" },
+  { value: "sin_licencia", label: "No portar licencia de conducir" },
+  { value: "alcohol_drogas", label: "Conducir bajo efectos del alcohol/drogas" },
+  { value: "sin_cinturon", label: "No usar cinturón de seguridad" },
+  { value: "uso_celular", label: "Uso de teléfono móvil al volante" },
+  { value: "no_respetar_senales", label: "No respetar señales de tránsito" },
+  { value: "placa_vencida", label: "Placa vencida o no visible" },
+  { value: "transporte_ilegal", label: "Transporte ilegal de pasajeros" },
+  { value: "sin_documentos", label: "No portar documentos del vehículo" },
+];
+
+const tipoMultaLabels = tipoMultaOptions.reduce((acc, opt) => {
+  acc[opt.value] = opt.label;
+  return acc;
+}, {});
+
 const MultaForm = ({ onSave, initialData }) => {
   const [form, setForm] = useState({
     vehiculo: null,
     tipoMulta: "",
     monto: "",
     fecha: "",
+    descripcion: "",
   });
   const [vehiculos, setVehiculos] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -33,6 +52,7 @@ const MultaForm = ({ onSave, initialData }) => {
         tipoMulta: initialData.tipoMulta,
         monto: initialData.monto,
         fecha: initialData.fecha,
+        descripcion: initialData.descripcion || "",
       });
     }
   }, [initialData]);
@@ -48,9 +68,14 @@ const MultaForm = ({ onSave, initialData }) => {
     });
   };
 
+  const handleTipoMultaChange = (e) => {
+    setForm({ ...form, tipoMulta: e.target.value });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    console.log("Datos del formulario:", form);
     await onSave(form);
     setSubmitting(false);
   };
@@ -84,21 +109,42 @@ const MultaForm = ({ onSave, initialData }) => {
           placeholder="Selecciona o escribe la placa"
           isClearable
           className="rounded-lg focus:ring-2 focus:ring-[#f3e7e7]"
+          required
         />
       </div>
 
       {/* Tipo de multa */}
-      <div className="relative">
+      <div>
         <label className="block text-sm font-medium mb-1 text-[#1b0e0e]">
           Tipo de multa
         </label>
-        <input
-          type="text"
+        <select
           name="tipoMulta"
           value={form.tipoMulta}
+          onChange={handleTipoMultaChange}
+          className="w-full pl-3 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7]"
+          required
+        >
+          <option value="">Selecciona un tipo de multa</option>
+          {tipoMultaOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Descripción */}
+      <div>
+        <label className="block text-sm font-medium mb-1 text-[#1b0e0e]">
+          Descripción
+        </label>
+        <textarea
+          name="descripcion"
+          value={form.descripcion}
           onChange={handleChange}
           className="w-full pl-3 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7]"
-          placeholder="Ej. Exceso de velocidad"
+          placeholder="Describe la multa"
           required
         />
       </div>
@@ -159,4 +205,5 @@ const MultaForm = ({ onSave, initialData }) => {
   );
 };
 
+export { tipoMultaLabels };
 export default MultaForm;
