@@ -187,6 +187,20 @@ const Vehicles = () => {
 
   const handleDelete = async (index) => {
     const id = filteredVehicles[index].idVehiculo;
+
+    // Verifica si tiene multas o incidencias asociadas
+    const tieneMultas = multas.some(m => m.vehiculo?.idVehiculo === id);
+    const tieneIncidencias = incidencias.some(i => i.vehiculo?.idVehiculo === id);
+
+    if (tieneMultas || tieneIncidencias) {
+      Swal.fire(
+        "No se puede eliminar",
+        "Este vehículo tiene multas o incidencias asociadas y no puede ser eliminado.",
+        "warning"
+      );
+      return;
+    }
+
     const result = await Swal.fire({
       title: "¿Seguro que deseas eliminar este vehículo?",
       icon: "warning",
@@ -196,19 +210,9 @@ const Vehicles = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
+
     if (result.isConfirmed) {
       try {
-        // Elimina multas asociadas
-        const multasToDelete = multas.filter(m => m.vehiculo?.idVehiculo === id);
-        for (const multa of multasToDelete) {
-          await multaService.delete(multa.idMulta);
-        }
-        // Elimina incidencias asociadas
-        const incidenciasToDelete = incidencias.filter(i => i.vehiculo?.idVehiculo === id);
-        for (const inc of incidenciasToDelete) {
-          await incidenteService.delete(inc.idIncidente);
-        }
-        // Ahora elimina el vehículo
         await vehicleService.delete(id);
         const updated = await vehicleService.getAll();
         setVehicles(updated);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import DriverForm from "../components/Drivers/DriverForm";
 import DriverTable from "../components/Drivers/DriverTable";
 import { driversService } from "../services/driversService";
+import { vehicleService } from "../services/vehicleService";
 import { FiPlus, FiMinus, FiSearch } from "react-icons/fi";
 import Swal from "sweetalert2";
 
@@ -124,6 +125,27 @@ const Drivers = () => {
 
   const handleDelete = async (index) => {
     const curp = drivers[index].curp;
+
+    // Verifica si el propietario tiene vehículos asignados
+    try {
+      const vehiculos = await vehicleService.findByPropietarioCurp(curp);
+      if (vehiculos && vehiculos.length > 0) {
+        Swal.fire(
+          "No se puede eliminar",
+          "Este propietario tiene vehículos asignados y no puede ser eliminado.",
+          "warning"
+        );
+        return;
+      }
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        "No se pudo verificar si el propietario tiene vehículos asignados.",
+        "error"
+      );
+      return;
+    }
+
     const result = await Swal.fire({
       title: "¿Seguro que deseas eliminar este propietario?",
       icon: "warning",
