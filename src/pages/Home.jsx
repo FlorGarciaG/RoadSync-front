@@ -1,105 +1,191 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { vehicleService } from "../services/vehicleService";
 import { driversService } from "../services/driversService";
 import { multaService } from "../services/multaService";
 import { incidenteService } from "../services/incidenteService";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { tipoMultaLabels } from "../utils/multaTypes";
+import { tipoIncidenciaLabels } from "../utils/incidenciaTypes";
+
+const CACHE_KEY = "homeDashboard";
+const CACHE_TIME_KEY = "homeDashboardTime";
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
 const Home = () => {
   const [totalVehiculos, setTotalVehiculos] = useState(null);
   const [totalPropietarios, setTotalPropietarios] = useState(null);
   const [totalMultas, setTotalMultas] = useState(null);
   const [totalIncidencias, setTotalIncidencias] = useState(null);
+  const [multasPorTipo, setMultasPorTipo] = useState([]);
+  const [incidenciasPorTipo, setIncidenciasPorTipo] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTotals = async () => {
-      setLoading(true);
-      try {
-        const vehiculos = await vehicleService.getAll();
-        setTotalVehiculos(Array.isArray(vehiculos) ? vehiculos.length : 0);
+  // Función para contar y mostrar el label descriptivo
+  const contarPorTipo = (items, labels, key) => {
+    const conteo = {};
+    items.forEach((item) => {
+      const tipo = item[key] || "Sin tipo";
+      conteo[tipo] = (conteo[tipo] || 0) + 1;
+    });
+    return Object.entries(conteo).map(([name, value]) => ({
+      name: labels[name] || name,
+      value,
+    }));
+  };
 
-        const propietarios = await driversService.getAll();
-        setTotalPropietarios(Array.isArray(propietarios) ? propietarios.length : 0);
+  // Memoriza la función para poder llamarla desde el botón
+  const fetchTotals = useCallback(async (force = false) => {
+    setLoading(true);
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      const cacheTime = localStorage.getItem(CACHE_TIME_KEY);
+      const now = Date.now();
 
-        const multas = await multaService.getAll();
-        setTotalMultas(Array.isArray(multas) ? multas.length : 0);
-
-        const incidencias = await incidenteService.getAll();
-        setTotalIncidencias(Array.isArray(incidencias) ? incidencias.length : 0);
-      } catch {
-        setTotalVehiculos(0);
-        setTotalPropietarios(0);
-        setTotalMultas(0);
-        setTotalIncidencias(0);
-      } finally {
+      if (!force && cached && cacheTime && now - cacheTime < CACHE_DURATION) {
+        const data = JSON.parse(cached);
+        setTotalVehiculos(data.totalVehiculos);
+        setTotalPropietarios(data.totalPropietarios);
+        setTotalMultas(data.totalMultas);
+        setTotalIncidencias(data.totalIncidencias);
+        setMultasPorTipo(data.multasPorTipo);
+        setIncidenciasPorTipo(data.incidenciasPorTipo);
         setLoading(false);
+        return;
       }
-    };
-    fetchTotals();
+
+      const vehiculos = await vehicleService.getAll();
+      const propietarios = await driversService.getAll();
+      const multas = await multaService.getAll();
+      const incidencias = await incidenteService.getAll();
+
+      const data = {
+        totalVehiculos: Array.isArray(vehiculos) ? vehiculos.length : 0,
+        totalPropietarios: Array.isArray(propietarios) ? propietarios.length : 0,
+        totalMultas: Array.isArray(multas) ? multas.length : 0,
+        totalIncidencias: Array.isArray(incidencias) ? incidencias.length : 0,
+        multasPorTipo: contarPorTipo(multas, tipoMultaLabels, "tipoMulta"),
+        incidenciasPorTipo: contarPorTipo(incidencias, tipoIncidenciaLabels, "tipoIncidencia"),
+      };
+
+      setTotalVehiculos(data.totalVehiculos);
+      setTotalPropietarios(data.totalPropietarios);
+      setTotalMultas(data.totalMultas);
+      setTotalIncidencias(data.totalIncidencias);
+      setMultasPorTipo(data.multasPorTipo);
+      setIncidenciasPorTipo(data.incidenciasPorTipo);
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(CACHE_TIME_KEY, now.toString());
+    } catch {
+      setTotalVehiculos(0);
+      setTotalPropietarios(0);
+      setTotalMultas(0);
+      setTotalIncidencias(0);
+      setMultasPorTipo([]);
+      setIncidenciasPorTipo([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchTotals();
+  }, [fetchTotals]);
 
   return (
     <div className="flex flex-col w-full max-w-[960px] flex-1 px-4 py-3">
       <div className="flex flex-wrap justify-between gap-3 p-4">
         <div className="flex min-w-72 flex-col gap-3">
-          <p className="text-[#1b0e0e] tracking-light text-[32px] font-bold leading-tight">Inicio</p>
-          <p className="text-[#994d4d] text-sm font-normal leading-normal">Resumen general</p>
+          <p className="text-[#1b0e0e] tracking-light text-[32px] font-bold leading-tight">
+            Inicio
+          </p>
+          <p className="text-[#994d4d] text-sm font-normal leading-normal">
+            Resumen general
+          </p>
         </div>
+        <button
+          onClick={() => fetchTotals(true)}
+          className="bg-[#4C0022] text-white px-4 py-2 rounded hover:bg-[#6a0040] transition-colors h-fit"
+        >
+          Actualizar datos
+        </button>
       </div>
 
       <div className="flex flex-wrap gap-3 px-4 py-3">
-        <div className="flex min-w-[111px] flex-1 basis-[fit-content] flex-col gap-2 rounded-lg border border-[#e7d0d0] p-3 items-center text-center">
-          {loading ? (
-            <span className="animate-pulse text-[#1b0e0e] text-2xl font-bold">...</span>
-          ) : (
-            <p className="text-[#1b0e0e] tracking-light text-2xl font-bold leading-tight">
-              {totalVehiculos}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <p className="text-[#994d4d] text-sm font-normal leading-normal">Total de Vehículos</p>
+        {[
+          { label: "Total de Vehículos", total: totalVehiculos },
+          { label: "Total de Propietarios", total: totalPropietarios },
+          { label: "Total de Multas", total: totalMultas },
+          { label: "Total de Incidencias", total: totalIncidencias },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="flex min-w-[111px] flex-1 basis-[fit-content] flex-col gap-2 rounded-lg border border-[#e7d0d0] p-3 items-center text-center"
+          >
+            {loading ? (
+              <span className="animate-pulse text-[#1b0e0e] text-2xl font-bold">
+                ...
+              </span>
+            ) : (
+              <p className="text-[#1b0e0e] tracking-light text-2xl font-bold leading-tight">
+                {item.total}
+              </p>
+            )}
+            <div className="flex items-center gap-2">
+              <p className="text-[#994d4d] text-sm font-normal leading-normal">
+                {item.label}
+              </p>
+            </div>
           </div>
-        </div>
-
-        <div className="flex min-w-[111px] flex-1 basis-[fit-content] flex-col gap-2 rounded-lg border border-[#e7d0d0] p-3 items-center text-center">
-          {loading ? (
-            <span className="animate-pulse text-[#1b0e0e] text-2xl font-bold">...</span>
-          ) : (
-            <p className="text-[#1b0e0e] tracking-light text-2xl font-bold leading-tight">
-              {totalPropietarios}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <p className="text-[#994d4d] text-sm font-normal leading-normal">Total de Propietarios</p>
-          </div>
-        </div>
-
-        <div className="flex min-w-[111px] flex-1 basis-[fit-content] flex-col gap-2 rounded-lg border border-[#e7d0d0] p-3 items-center text-center">
-          {loading ? (
-            <span className="animate-pulse text-[#1b0e0e] text-2xl font-bold">...</span>
-          ) : (
-            <p className="text-[#1b0e0e] tracking-light text-2xl font-bold leading-tight">
-              {totalMultas}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <p className="text-[#994d4d] text-sm font-normal leading-normal">Total de Multas</p>
-          </div>
-        </div>
-
-        <div className="flex min-w-[111px] flex-1 basis-[fit-content] flex-col gap-2 rounded-lg border border-[#e7d0d0] p-3 items-center text-center">
-          {loading ? (
-            <span className="animate-pulse text-[#1b0e0e] text-2xl font-bold">...</span>
-          ) : (
-            <p className="text-[#1b0e0e] tracking-light text-2xl font-bold leading-tight">
-              {totalIncidencias}
-            </p>
-          )}
-          <div className="flex items-center gap-2">
-            <p className="text-[#994d4d] text-sm font-normal leading-normal">Total de Incidencias</p>
-          </div>
-        </div>
+        ))}
       </div>
+
+      {/* Gráfica de Multas por Tipo */}
+      {!loading && multasPorTipo.length > 0 && (
+        <div className="w-full h-80 mt-8">
+          <p className="text-[#4C0022] text-xl font-bold mb-2">
+            Multas por Tipo
+          </p>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={multasPorTipo}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#B23A48" name="Cantidad de Multas" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Gráfica de Incidencias por Tipo */}
+      {!loading && incidenciasPorTipo.length > 0 && (
+        <div className="w-full h-80 mt-8">
+          <p className="text-[#4C0022] text-xl font-bold mb-2">
+            Incidencias por Tipo
+          </p>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={incidenciasPorTipo}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#3A506B" name="Cantidad de Incidencias" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 };
