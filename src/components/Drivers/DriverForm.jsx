@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaBroom } from "react-icons/fa6";
 
 const CURP_REGEX = /^[A-Z]{4}[0-9]{6}[HM]{1}[A-Z]{5}[A-Z0-9]{2}$/;
 const RFC_GENERICO = "XAXX010101000";
 
-const DriverForm = ({ formData, onChange, onSubmit, editMode, onClear }) => {
-  const [curpError, setCurpError] = useState("");
-  const [homoclave, setHomoclave] = useState("");
-  const [useGenericRfc, setUseGenericRfc] = useState(false);
+const DriverForm = ({
+  formData,
+  onChange,
+  onSubmit,
+  editMode,
+  onClear,
+  homoclave,
+  setHomoclave,
+  useGenericRfc,
+  setUseGenericRfc,
+}) => {
+  const [curpError, setCurpError] = React.useState("");
 
   const getRfcFromCurp = () => {
     if (formData.curp && formData.curp.length >= 10 && homoclave.length === 3) {

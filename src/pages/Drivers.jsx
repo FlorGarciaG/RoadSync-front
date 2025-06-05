@@ -6,6 +6,8 @@ import { vehicleService } from "../services/vehicleService";
 import { FiPlus, FiMinus, FiSearch } from "react-icons/fi";
 import Swal from "sweetalert2";
 
+const RFC_GENERICO = "XAXX010101000";
+
 const Drivers = () => {
   const [drivers, setDrivers] = useState([]);
   const [formData, setFormData] = useState({
@@ -21,6 +23,8 @@ const Drivers = () => {
   const [renderForm, setRenderForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [homoclave, setHomoclave] = useState("");
+  const [useGenericRfc, setUseGenericRfc] = useState(false);
 
   // Mostrar/ocultar el formulario con animación
   useEffect(() => {
@@ -104,6 +108,18 @@ const Drivers = () => {
   const handleEdit = (index) => {
     const driver = drivers[index];
     setEditIndex(index);
+
+    // Detecta si es RFC genérico
+    const isGeneric = driver.rfc === RFC_GENERICO;
+    setUseGenericRfc(isGeneric);
+
+    // Si no es genérico, separa la homoclave (últimos 3 caracteres)
+    let homoclaveValue = "";
+    if (!isGeneric && driver.rfc && driver.rfc.length === 13) {
+      homoclaveValue = driver.rfc.substring(10, 13);
+    }
+    setHomoclave(homoclaveValue);
+
     setFormData({
       nombre: driver.nombre || "",
       apellidos: driver.apellidos || "",
@@ -277,6 +293,10 @@ const Drivers = () => {
                 onSubmit={handleSubmit}
                 editMode={editIndex !== null}
                 onClear={handleClearForm}
+                homoclave={homoclave}
+                setHomoclave={setHomoclave}
+                useGenericRfc={useGenericRfc}
+                setUseGenericRfc={setUseGenericRfc}
               />
             )}
           </div>
