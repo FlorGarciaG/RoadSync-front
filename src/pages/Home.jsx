@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { tipoMultaLabels } from "../utils/multaTypes";
 import { tipoIncidenciaLabels } from "../utils/incidenciaTypes";
+import { FaRegSmile } from "react-icons/fa";
 
 const CACHE_KEY = "homeDashboard";
 const CACHE_TIME_KEY = "homeDashboardTime";
@@ -28,6 +29,8 @@ const Home = () => {
   const [multasPorTipo, setMultasPorTipo] = useState([]);
   const [incidenciasPorTipo, setIncidenciasPorTipo] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
 
   // Función para contar y mostrar el label descriptivo
   const contarPorTipo = (items, labels, key) => {
@@ -101,17 +104,69 @@ const Home = () => {
     fetchTotals();
   }, [fetchTotals]);
 
+  useEffect(() => {
+    // Obtén el nombre y rol del usuario desde localStorage
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserName(user.nombre || "");
+      setUserRole(user.rol || "");
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <svg
+          className="animate-spin h-10 w-10 text-[#4C0022] mb-4"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8z"
+          ></path>
+        </svg>
+        <span className="text-[#4C0022] text-lg font-semibold">
+          Cargando resumen...
+        </span>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col w-full max-w-[960px] flex-1 px-4 py-3">
-      <div className="flex flex-wrap justify-between gap-3 p-4">
-        <div className="flex min-w-72 flex-col gap-3">
-          <p className="text-[#1b0e0e] tracking-light text-[32px] font-bold leading-tight">
-            Inicio
+    <div className="flex flex-col w-full max-w-[960px] flex-1 px-4 py-3 relative">
+      {/* Chip de rol en la esquina superior derecha */}
+      {userRole && (
+        <span className="absolute top-4 right-4 bg-[#4C0022] text-white px-4 py-1 rounded-full text-sm shadow font-semibold z-10 m-3">
+          {userRole}
+        </span>
+      )}
+      <div className="flex items-center gap-4 bg-[#f3e7e7] rounded-xl p-4 mb-6 shadow">
+        <div className="flex items-center justify-center bg-[#4C0022] rounded-full h-12 w-12">
+          <FaRegSmile className="text-white text-2xl" />
+        </div>
+        <div>
+          <p className="text-xl font-bold text-[#4C0022] mb-1">
+            ¡Bienvenido{userName ? `, ${userName}` : ""}!
           </p>
-          <p className="text-[#994d4d] text-sm font-normal leading-normal">
-            Resumen general
+          <p className="text-[#994d4d] text-sm">
+            Resumen general de vehículos, propietarios, multas e incidencias.
           </p>
         </div>
+      </div>
+
+      <div className="flex flex-wrap justify-between gap-3 p-4">
         <button
           onClick={() => fetchTotals(true)}
           className="bg-[#4C0022] text-white px-4 py-2 rounded hover:bg-[#6a0040] transition-colors h-fit"

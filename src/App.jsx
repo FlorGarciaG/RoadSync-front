@@ -14,9 +14,15 @@ function App() {
   useEffect(() => {
     const checkAuth = () => {
       const user = localStorage.getItem("userData");
-      if (user) {
+      const expiresAt = localStorage.getItem("userDataExpiresAt");
+      if (user && expiresAt && Date.now() < Number(expiresAt)) {
         setUserData(JSON.parse(user));
         setAuthenticated(true);
+      } else {
+        localStorage.removeItem("userData");
+        localStorage.removeItem("userDataExpiresAt");
+        setAuthenticated(false);
+        setUserData(null);
       }
       setLoading(false);
     };
@@ -32,7 +38,9 @@ function App() {
       if (result.success) {
         setUserData(result.data);
         setAuthenticated(true);
+        const expiresAt = Date.now() + 8 * 60 * 60 * 1000; // 8 horas
         localStorage.setItem("userData", JSON.stringify(result.data));
+        localStorage.setItem("userDataExpiresAt", expiresAt.toString());
         navigate("/");
         return true;
       } else {
@@ -46,6 +54,9 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("userData");
+    localStorage.removeItem("userDataExpiresAt");
+    localStorage.removeItem("homeDashboard");
+    localStorage.removeItem("homeDashboardTime");
     setAuthenticated(false);
     setUserData(null);
     navigate("/login");
