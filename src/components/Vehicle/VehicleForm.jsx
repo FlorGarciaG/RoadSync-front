@@ -10,18 +10,15 @@ const VehicleForm = ({
   editMode,
   onClear,
 }) => {
-  // Opciones para react-select basado en drivers
   const propietarioOptions = drivers.map((driver) => ({
     value: driver.curp,
     label: `${driver.nombre} ${driver.apellidos} (${driver.curp})`,
   }));
 
-  // Encontrar la opción seleccionada para react-select
   const selectedPropietario =
     propietarioOptions.find((opt) => opt.value === formData.propietarioCurp) ||
     null;
 
-  // Manejar cambio para react-select simulando evento para onChange
   const handlePropietarioChange = (selectedOption) => {
     onChange({
       target: {

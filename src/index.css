@@ -12,7 +12,7 @@
 }
 
 .custom-react-select__control--is-focused {
-  border-bottom-color: #4c0022 !important; /* Color de tu tema */
+  border-bottom-color: #4c0022 !important;
 }
 
 .custom-react-select__input {
@@ -39,7 +39,7 @@
 
 .custom-react-select__dropdown-indicator:hover,
 .custom-react-select__clear-indicator:hover {
-  color: #4c0022 !important; /* Color de tu tema */
+  color: #4c0022 !important;
 }
 
 .custom-react-select__indicator-separator {
