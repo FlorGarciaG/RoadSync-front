@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-react-select__control {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #d1d5db !important; /* gris-300 */
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+}
+
+.custom-react-select__control--is-focused {
+  border-bottom-color: #4c0022 !important; /* Color de tu tema */
+}
+
+.custom-react-select__input {
+  padding: 0.4rem 0 !important; /* py-2.5 */
+  margin: 0 !important;
+  color: #111827 !important; /* gris-900 */
+}
+
+.custom-react-select__value-container {
+  padding: 0 !important;
+}
+
+.custom-react-select__placeholder {
+  color: #6b7280 !important; /* gris-500 */
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+}
+
+.custom-react-select__dropdown-indicator,
+.custom-react-select__clear-indicator {
+  padding: 0 0 0 0.5rem !important; /* pl-2 */
+  color: #6b7280 !important; /* gris-500 */
+}
+
+.custom-react-select__dropdown-indicator:hover,
+.custom-react-select__clear-indicator:hover {
+  color: #4c0022 !important; /* Color de tu tema */
+}
+
+.custom-react-select__indicator-separator {
+  display: none !important;
+}
+
+.custom-react-select__menu {
+  margin-top: 0.5rem !important;
+  border-radius: 0.375rem !important; /* rounded-lg */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.custom-react-select__single-value {
+  color: #111827 !important; /* gris-900 */
+}

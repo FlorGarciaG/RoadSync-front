@@ -1,5 +1,6 @@
-import React from 'react';
+import React from "react";
 import { FaBroom } from "react-icons/fa6";
+import Select from "react-select";
 
 const VehicleForm = ({
   formData,
@@ -7,8 +8,29 @@ const VehicleForm = ({
   onSubmit,
   drivers,
   editMode,
-  onClear
+  onClear,
 }) => {
+  // Opciones para react-select basado en drivers
+  const propietarioOptions = drivers.map((driver) => ({
+    value: driver.curp,
+    label: `${driver.nombre} ${driver.apellidos} (${driver.curp})`,
+  }));
+
+  // Encontrar la opción seleccionada para react-select
+  const selectedPropietario =
+    propietarioOptions.find((opt) => opt.value === formData.propietarioCurp) ||
+    null;
+
+  // Manejar cambio para react-select simulando evento para onChange
+  const handlePropietarioChange = (selectedOption) => {
+    onChange({
+      target: {
+        name: "propietarioCurp",
+        value: selectedOption ? selectedOption.value : "",
+      },
+    });
+  };
+
   return (
     <form
       onSubmit={onSubmit}
@@ -28,21 +50,18 @@ const VehicleForm = ({
       {/* Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
         {/* Propietario */}
-        <div className="relative z-0 w-full group">
-          <select
-            name="propietarioCurp"
-            value={formData.propietarioCurp || ""}
-            onChange={onChange}
+        <div className="relative w-full group">
+          <Select
+            options={propietarioOptions}
+            value={selectedPropietario}
+            onChange={handlePropietarioChange}
+            placeholder="Seleccione o escriba el propietario"
+            isClearable
+            isSearchable
+            className="custom-react-select"
+            classNamePrefix="custom-react-select"
             required
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
-          >
-            <option value="">Seleccione propietario</option>
-            {drivers.map((driver, i) => (
-              <option key={i} value={driver.curp}>
-                {driver.nombre} {driver.apellidos} ({driver.curp})
-              </option>
-            ))}
-          </select>
+          />
           <label
             htmlFor="propietarioCurp"
             className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-focus:text-[#4C0022]"
