@@ -10,10 +10,12 @@ const VehicleForm = ({
   editMode,
   onClear,
 }) => {
-  const propietarioOptions = drivers.map((driver) => ({
-    value: driver.curp,
-    label: `${driver.nombre} ${driver.apellidos} (${driver.curp})`,
-  }));
+  const propietarioOptions = Array.isArray(drivers)
+    ? drivers.map((driver) => ({
+        value: driver.curp,
+        label: `${driver.nombre} ${driver.apellidos} (${driver.curp})`,
+      }))
+    : [];
 
   const selectedPropietario =
     propietarioOptions.find((opt) => opt.value === formData.propietarioCurp) ||
