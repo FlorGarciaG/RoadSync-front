@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaBroom } from "react-icons/fa6"; 
+
+const CURP = /^[A-Z]{4}[0-9]{6}[HM]{1}[A-Z]{5}[A-Z0-9]{2}$/;
+
 const DriverForm = ({ formData, onChange, onSubmit, editMode, onClear }) => {
+  const [curpError, setCurpError] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.curp || formData.curp.length !== 18) {
-      alert("La CURP debe tener exactamente 18 caracteres.");
+      setCurpError("La CURP debe tener exactamente 18 caracteres.");
       return;
     }
+    if (!CURP.test(formData.curp)) {
+      setCurpError("CURP no válido. Debe cumplir el formato oficial.");
+      return;
+    }
+    setCurpError("");
     if (formData.rfc && formData.rfc.length !== 13) {
       alert("El RFC debe tener exactamente 13 caracteres.");
       return;
     }
     onSubmit(e);
+  };
+
+  const handleCurpChange = (e) => {
+    onChange(e);
+    setCurpError("");
   };
 
   return (
@@ -80,12 +95,14 @@ const DriverForm = ({ formData, onChange, onSubmit, editMode, onClear }) => {
           type="text"
           name="curp"
           value={formData.curp}
-          onChange={onChange}
+          onChange={handleCurpChange}
           required
           minLength={18}
           maxLength={18}
           placeholder=" "
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          className={`block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b ${
+            curpError ? "border-red-500" : "border-gray-300"
+          } appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer`}
         />
         <label
           htmlFor="curp"
@@ -98,6 +115,9 @@ const DriverForm = ({ formData, onChange, onSubmit, editMode, onClear }) => {
         >
           CURP
         </label>
+        {curpError && (
+          <span className="text-red-600 text-xs mt-1 block">{curpError}</span>
+        )}
       </div>
 
       <div className="relative z-0 w-full group">
