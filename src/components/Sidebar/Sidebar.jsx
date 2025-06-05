@@ -10,6 +10,7 @@ import {
   FaSignOutAlt,
   FaChevronLeft,
   FaChevronRight,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
 
 const Sidebar = ({ userRole = "user", onLogout, collapsed, toggleSidebar }) => {
@@ -41,15 +42,22 @@ const Sidebar = ({ userRole = "user", onLogout, collapsed, toggleSidebar }) => {
     },
   ];
 
-  const adminMenuItem = {
+  const adminMenuItem = [
+  {
     icon: <FaUsers size={20} />,
     text: "Usuarios",
     to: "/users",
-  };
+  },
+  {
+    icon: <FaFileInvoiceDollar size={20} />,
+    text: "Catálogo de Multas",
+    to: "/catalogo-multas",
+  },
+];
 
   const menuItems =
     userRole === "Administrador"
-      ? [...baseMenuItems, adminMenuItem]
+      ? [...baseMenuItems, ...adminMenuItem]
       : baseMenuItems;
 
   return (

@@ -8,6 +8,7 @@ import Multas from "./pages/problemas-legales/Multas";
 import Incidencias from "./pages/problemas-legales/Incidencias";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import CatalogoMultas from "./pages/CatalogoMultas";
 
 const AppRoutes = ({ userData, authenticated, onLogin }) => (
   <Routes>
@@ -44,6 +45,10 @@ const AppRoutes = ({ userData, authenticated, onLogin }) => (
     <Route
       path="/problemas-legales/incidencias"
       element={authenticated ? <Incidencias /> : <Navigate to="/login" replace />}
+    />
+    <Route
+      path="/catalogo-multas"
+      element={authenticated ? <CatalogoMultas /> : <Navigate to="/login" replace />}
     />
     <Route path="/inicio" element={<Navigate to="/" replace />} />
     <Route path="*" element={<NotFound />} />
