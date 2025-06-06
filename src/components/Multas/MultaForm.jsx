@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { vehicleService } from "../../services/vehicleService";
+import catalogoMultasService from "../../services/catalogoMultasService";
 import { FaDollarSign } from "react-icons/fa";
-import { tipoMultaOptions } from "../../utils/multaTypes";
-
-const tipoMultaLabels = tipoMultaOptions.reduce((acc, opt) => {
-  acc[opt.value] = opt.label;
-  return acc;
-}, {});
 
 const MultaForm = ({ onSave, initialData }) => {
   const [form, setForm] = useState({
@@ -18,6 +13,7 @@ const MultaForm = ({ onSave, initialData }) => {
     descripcion: "",
   });
   const [vehiculos, setVehiculos] = useState([]);
+  const [tiposMulta, setTiposMulta] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -30,6 +26,18 @@ const MultaForm = ({ onSave, initialData }) => {
       }
     };
     fetchVehiculos();
+  }, []);
+
+  useEffect(() => {
+    const fetchTiposMulta = async () => {
+      try {
+        const data = await catalogoMultasService.getAll();
+        setTiposMulta(Array.isArray(data) ? data : []);
+      } catch {
+        setTiposMulta([]);
+      }
+    };
+    fetchTiposMulta();
   }, []);
 
   useEffect(() => {
@@ -56,14 +64,14 @@ const MultaForm = ({ onSave, initialData }) => {
     });
   };
 
-  const handleTipoMultaChange = (e) => {
-    setForm({ ...form, tipoMulta: e.target.value });
+  // Cambia el tipo de multa usando react-select
+  const handleTipoMultaChange = (selectedOption) => {
+    setForm({ ...form, tipoMulta: selectedOption ? selectedOption.value : "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    console.log("Datos del formulario:", form);
     await onSave(form);
     setSubmitting(false);
   };
@@ -71,6 +79,12 @@ const MultaForm = ({ onSave, initialData }) => {
   const vehiculoOptions = vehiculos.map((v) => ({
     value: v,
     label: `${v.placa} - ${v.marca} ${v.modelo}`,
+  }));
+
+  // Opciones para react-select usando el catálogo del backend
+  const tipoMultaOptions = tiposMulta.map((opt) => ({
+    value: opt.tipo,
+    label: opt.tipo,
   }));
 
   const isEdit = Boolean(initialData);
@@ -101,25 +115,24 @@ const MultaForm = ({ onSave, initialData }) => {
         />
       </div>
 
-      {/* Tipo de multa */}
+      {/* Tipo de multa como React Select */}
       <div>
         <label className="block text-sm font-medium mb-1 text-[#1b0e0e]">
           Tipo de multa
         </label>
-        <select
-          name="tipoMulta"
-          value={form.tipoMulta}
+        <Select
+          options={tipoMultaOptions}
           onChange={handleTipoMultaChange}
-          className="w-full pl-3 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7]"
+          value={
+            tipoMultaOptions.find(
+              (opt) => opt.value === form.tipoMulta
+            ) || null
+          }
+          placeholder="Selecciona el tipo de multa"
+          isClearable
+          className="rounded-lg focus:ring-2 focus:ring-[#f3e7e7]"
           required
-        >
-          <option value="">Selecciona un tipo de multa</option>
-          {tipoMultaOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* Descripción */}
@@ -193,5 +206,4 @@ const MultaForm = ({ onSave, initialData }) => {
   );
 };
 
-export { tipoMultaLabels };
 export default MultaForm;
