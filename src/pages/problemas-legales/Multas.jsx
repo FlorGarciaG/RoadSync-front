@@ -38,11 +38,10 @@ const MultasPage = () => {
   }, [placa]);
 
   const handleAddMulta = async (nuevaMulta) => {
-    console.log("Nueva multa a agregar:", nuevaMulta);
     try {
       await multaService.create({
         vehiculo: { idVehiculo: nuevaMulta.vehiculo.idVehiculo },
-        tipoMulta: nuevaMulta.tipoMulta,
+        tipoMulta: { idTipo: nuevaMulta.tipoMulta.idTipo },
         monto: nuevaMulta.monto,
         fecha: nuevaMulta.fecha,
         descripcion: nuevaMulta.descripcion,

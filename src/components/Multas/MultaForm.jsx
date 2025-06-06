@@ -46,7 +46,7 @@ const MultaForm = ({ onSave, initialData }) => {
         idMulta: initialData.idMulta,
         vehiculo: initialData.vehiculo,
         tipoMulta: initialData.tipoMulta,
-        monto: initialData.monto,
+        monto: initialData.tipoMulta?.monto ?? "",
         fecha: initialData.fecha,
         descripcion: initialData.descripcion || "",
       });
@@ -64,15 +64,23 @@ const MultaForm = ({ onSave, initialData }) => {
     });
   };
 
-  // Cambia el tipo de multa usando react-select
+  // Cambia el tipo de multa usando react-select y autocompleta el monto
   const handleTipoMultaChange = (selectedOption) => {
-    setForm({ ...form, tipoMulta: selectedOption ? selectedOption.value : "" });
+    const multaSeleccionada = tiposMulta.find((opt) => opt.tipo === selectedOption?.value);
+    setForm({
+      ...form,
+      tipoMulta: multaSeleccionada || "",
+      monto: multaSeleccionada ? multaSeleccionada.monto : "",
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    await onSave(form);
+    await onSave({
+      ...form,
+      tipoMulta: form.tipoMulta ? { idTipo: form.tipoMulta.idTipo } : null,
+    });
     setSubmitting(false);
   };
 
@@ -125,7 +133,7 @@ const MultaForm = ({ onSave, initialData }) => {
           onChange={handleTipoMultaChange}
           value={
             tipoMultaOptions.find(
-              (opt) => opt.value === form.tipoMulta
+              (opt) => opt.value === form.tipoMulta?.tipo
             ) || null
           }
           placeholder="Selecciona el tipo de multa"
@@ -150,7 +158,7 @@ const MultaForm = ({ onSave, initialData }) => {
         />
       </div>
 
-      {/* Monto con ícono */}
+      {/* Monto con ícono, autocompletado y no editable */}
       <div>
         <label className="block text-sm font-medium text-[#1b0e0e] mb-1">
           Monto
@@ -167,6 +175,7 @@ const MultaForm = ({ onSave, initialData }) => {
             className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7]"
             placeholder="Ingrese monto"
             required
+            readOnly // <-- hace que no se pueda editar
           />
         </div>
       </div>
