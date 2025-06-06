@@ -19,6 +19,11 @@ const Vehicles = () => {
     modelo: "",
     tarjeta: "",
     tarjetaVencimiento: "",
+    numSerie: "",
+    numMotor: "",
+    tipo_combustible: "",
+    anioAuto: "",
+    uso: "",
   });
   const [editIndex, setEditIndex] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -113,6 +118,11 @@ const Vehicles = () => {
       modelo: formData.modelo,
       tarjeta: formData.tarjeta,
       tarjetaVencimiento: formData.tarjetaVencimiento,
+      numSerie: formData.numSerie,
+      numMotor: formData.numMotor,
+      tipo_combustible: formData.tipo_combustible,
+      anioAuto: formData.anioAuto ? parseInt(formData.anioAuto) : null,
+      uso: formData.uso,
     };
 
     try {
@@ -152,6 +162,11 @@ const Vehicles = () => {
       modelo: "",
       tarjeta: "",
       tarjetaVencimiento: "",
+      numSerie: "",
+      numMotor: "",
+      tipo_combustible: "",
+      anioAuto: "",
+      uso: "",
     });
     setEditIndex(null);
     setShowForm(false);
@@ -166,6 +181,11 @@ const Vehicles = () => {
       modelo: "",
       tarjeta: "",
       tarjetaVencimiento: "",
+      numSerie: "",
+      numMotor: "",
+      tipo_combustible: "",
+      anioAuto: "",
+      uso: "",
     });
     setEditIndex(null);
   };
@@ -180,6 +200,11 @@ const Vehicles = () => {
       modelo: item.modelo || "",
       tarjeta: item.tarjeta || "",
       tarjetaVencimiento: item.tarjetaVencimiento || "",
+      numSerie: item.numSerie || "",
+      numMotor: item.numMotor || "",
+      tipo_combustible: item.tipo_combustible || "",
+      anioAuto: item.anioAuto || "",
+      uso: item.uso || "",
     });
     setEditIndex(index);
     setShowForm(true);

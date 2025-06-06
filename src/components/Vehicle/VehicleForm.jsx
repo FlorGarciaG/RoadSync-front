@@ -186,6 +186,103 @@ const VehicleForm = ({
             Vencimiento Tarjeta
           </label>
         </div>
+
+        {/* Número de Serie */}
+        <div className="relative z-0 w-full group">
+          <input
+            type="text"
+            name="numSerie"
+            value={formData.numSerie || ""}
+            onChange={onChange}
+            required
+            placeholder=" "
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          />
+          <label
+            htmlFor="numSerie"
+            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-[#4C0022]"
+          >
+            Número de Serie
+          </label>
+        </div>
+
+        {/* Número de Motor */}
+        <div className="relative z-0 w-full group">
+          <input
+            type="text"
+            name="numMotor"
+            value={formData.numMotor || ""}
+            onChange={onChange}
+            required
+            placeholder=" "
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          />
+          <label
+            htmlFor="numMotor"
+            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-[#4C0022]"
+          >
+            Número de Motor
+          </label>
+        </div>
+
+        {/* Tipo de Combustible */}
+        <div className="relative z-0 w-full group">
+          <input
+            type="text"
+            name="tipo_combustible"
+            value={formData.tipo_combustible || ""}
+            onChange={onChange}
+            required
+            placeholder=" "
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          />
+          <label
+            htmlFor="tipo_combustible"
+            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-[#4C0022]"
+          >
+            Tipo de Combustible
+          </label>
+        </div>
+
+        {/* Año del Auto */}
+        <div className="relative z-0 w-full group">
+          <input
+            type="number"
+            name="anioAuto"
+            value={formData.anioAuto || ""}
+            onChange={onChange}
+            required
+            min={1000}
+            max={9999}
+            placeholder=" "
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          />
+          <label
+            htmlFor="anioAuto"
+            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-[#4C0022]"
+          >
+            Año del Auto
+          </label>
+        </div>
+
+        {/* Uso */}
+        <div className="relative z-0 w-full group">
+          <input
+            type="text"
+            name="uso"
+            value={formData.uso || ""}
+            onChange={onChange}
+            required
+            placeholder=" "
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
+          />
+          <label
+            htmlFor="uso"
+            className="absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 left-0 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-[#4C0022]"
+          >
+            Uso
+          </label>
+        </div>
       </div>
 
       {/* Fila del botón */}

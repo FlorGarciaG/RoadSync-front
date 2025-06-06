@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import Modal from "../Modal/Modal";
 import MultaCard from "../Multas/MultaCard";
 import IncidenteCard from "../Incidentes/IncidenteCard";
-import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiEye } from "react-icons/fi";
 
-const VehicleCard = ({ vehicle, multas = [], incidencias = [],  onEdit, onDelete }) => {
+const VehicleCard = ({ vehicle, multas = [], incidencias = [], onEdit, onDelete }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null); // "multas" o "incidencias"
+  const [modalType, setModalType] = useState(null);
 
   const handleChipClick = (type) => {
     setModalType(type);
@@ -43,6 +43,13 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [],  onEdit, onDelete
             >
               <FiTrash2 size={20} />
             </button>
+            <button
+              onClick={() => handleChipClick("detalles")}
+              className="text-[#4C0022] hover:text-[#6a0040] transition-colors"
+              title="Ver detalles"
+            >
+              <FiEye size={20} />
+            </button>
           </div>
         </div>
 
@@ -68,7 +75,7 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [],  onEdit, onDelete
           )}
         </div>
 
-        {/* Detalles del vehículo */}
+        {/* Detalles básicos del vehículo */}
         <div className="text-sm text-gray-700 space-y-1">
           <p>
             <span className="font-semibold text-[#4C0022]">Tipo:</span>{" "}
@@ -103,29 +110,80 @@ const VehicleCard = ({ vehicle, multas = [], incidencias = [],  onEdit, onDelete
 
       {/* Modal informativo global */}
       <Modal isOpen={modalOpen} onClose={handleCloseModal}>
-        <h2 className="text-xl font-bold mb-4 text-[#4C0022]">
-          {modalType === "multas"
-            ? "Multas del Vehículo"
-            : "Incidencias del Vehículo"}
-        </h2>
-        {modalData.length === 0 ? (
-          <p className="text-gray-500">No hay información disponible.</p>
-        ) : (
-          <div
-            className={
-              modalData.length > 2
-                ? "space-y-4 max-h-72 overflow-y-auto"
-                : "space-y-4"
-            }
-          >
-            {modalType === "multas"
-              ? modalData.map((multa, idx) => (
-                  <MultaCard key={multa.id || idx} {...multa} hideActions />
-                ))
-              : modalData.map((inc, idx) => (
-                  <IncidenteCard key={inc.id || idx} {...inc} hideActions />
-                ))}
+        {modalType === "detalles" ? (
+          <div>
+            <h2 className="text-xl font-bold mb-4 text-[#4C0022]">
+              Detalles del Vehículo
+            </h2>
+            <div className="text-sm text-gray-700 space-y-1">
+              <p>
+                <span className="font-semibold text-[#4C0022]">Placa:</span> {vehicle.placa}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Tipo:</span> {vehicle.tipo}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Marca:</span> {vehicle.marca}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Modelo:</span> {vehicle.modelo}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Tarjeta:</span> {vehicle.tarjeta}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Vencimiento Tarjeta:</span> {vehicle.tarjetaVencimiento}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Número de Serie:</span> {vehicle.numSerie}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Número de Motor:</span> {vehicle.numMotor}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Tipo de Combustible:</span> {vehicle.tipo_combustible}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Año del Auto:</span> {vehicle.anioAuto}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Uso:</span> {vehicle.uso}
+              </p>
+              <p>
+                <span className="font-semibold text-[#4C0022]">Propietario:</span>{" "}
+                {vehicle.propietario
+                  ? `${vehicle.propietario.nombre} ${vehicle.propietario.apellidos} (${vehicle.propietario.curp})`
+                  : "Sin propietario"}
+              </p>
+            </div>
           </div>
+        ) : (
+          <>
+            <h2 className="text-xl font-bold mb-4 text-[#4C0022]">
+              {modalType === "multas"
+                ? "Multas del Vehículo"
+                : "Incidencias del Vehículo"}
+            </h2>
+            {modalData.length === 0 ? (
+              <p className="text-gray-500">No hay información disponible.</p>
+            ) : (
+              <div
+                className={
+                  modalData.length > 2
+                    ? "space-y-4 max-h-72 overflow-y-auto"
+                    : "space-y-4"
+                }
+              >
+                {modalType === "multas"
+                  ? modalData.map((multa, idx) => (
+                      <MultaCard key={multa.id || idx} {...multa} hideActions />
+                    ))
+                  : modalData.map((inc, idx) => (
+                      <IncidenteCard key={inc.id || idx} {...inc} hideActions />
+                    ))}
+              </div>
+            )}
+          </>
         )}
       </Modal>
     </>
