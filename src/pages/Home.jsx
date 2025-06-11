@@ -75,8 +75,8 @@ const Home = () => {
         totalPropietarios: Array.isArray(propietarios) ? propietarios.length : 0,
         totalMultas: Array.isArray(multas) ? multas.length : 0,
         totalIncidencias: Array.isArray(incidencias) ? incidencias.length : 0,
-        multasPorTipo: contarPorTipo(multas, tipoMultaLabels, "tipoMulta"),
-        incidenciasPorTipo: contarPorTipo(incidencias, tipoIncidenciaLabels, "tipoIncidencia"),
+        multasPorTipo: contarPorTipo(Array.isArray(multas) ? multas : [], tipoMultaLabels, "tipoMulta"),
+        incidenciasPorTipo: contarPorTipo(Array.isArray(incidencias) ? incidencias : [], tipoIncidenciaLabels, "tipoIncidencia"),
       };
 
       setTotalVehiculos(data.totalVehiculos);
@@ -88,7 +88,8 @@ const Home = () => {
 
       localStorage.setItem(CACHE_KEY, JSON.stringify(data));
       localStorage.setItem(CACHE_TIME_KEY, now.toString());
-    } catch {
+    } catch (error) {
+      // console.error("Error en fetchTotals:", error);
       setTotalVehiculos(0);
       setTotalPropietarios(0);
       setTotalMultas(0);
@@ -105,7 +106,6 @@ const Home = () => {
   }, [fetchTotals]);
 
   useEffect(() => {
-    // Obtén el nombre y rol del usuario desde localStorage
     const userData = localStorage.getItem("userData");
     if (userData) {
       const user = JSON.parse(userData);
