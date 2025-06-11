@@ -36,7 +36,11 @@ const Home = () => {
   const contarPorTipo = (items, labels, key) => {
     const conteo = {};
     items.forEach((item) => {
-      const tipo = item[key] || "Sin tipo";
+      let tipo = item[key];
+      if (tipo && typeof tipo === "object") {
+        tipo = tipo.tipo;
+      }
+      tipo = tipo || "Sin tipo";
       conteo[tipo] = (conteo[tipo] || 0) + 1;
     });
     return Object.entries(conteo).map(([name, value]) => ({
