@@ -17,6 +17,13 @@ const DriverForm = ({
 }) => {
   const [curpError, setCurpError] = React.useState("");
 
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const minDate = `${yyyy}-${mm}-${dd}`;
+  const maxDate = `${yyyy + 10}-${mm}-${dd}`;
+
   const getRfcFromCurp = () => {
     if (formData.curp && formData.curp.length >= 10 && homoclave.length === 3) {
       return formData.curp.substring(0, 10) + homoclave.toUpperCase();
@@ -225,6 +232,8 @@ const DriverForm = ({
           value={formData.licenciaVencimiento}
           onChange={onChange}
           required
+          min={minDate}
+          max={maxDate}
           placeholder=" "
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4C0022] peer"
         />

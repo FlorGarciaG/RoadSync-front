@@ -12,6 +12,15 @@ const IncidenteForm = ({ onSave, initialData }) => {
   });
   const [vehiculos, setVehiculos] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [fechaError, setFechaError] = useState("");
+
+  // Cálculo de fechas límite
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const maxDate = `${yyyy}-${mm}-${dd}`;
+  const minDate = `${yyyy - 10}-${mm}-${dd}`;
 
   useEffect(() => {
     const fetchVehiculos = async () => {
@@ -38,7 +47,17 @@ const IncidenteForm = ({ onSave, initialData }) => {
   }, [initialData]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "fecha") {
+      if (value > maxDate) {
+        setFechaError("El valor debe ser igual o inferior a la fecha actual");
+      } else if (value < minDate) {
+        setFechaError("El valor debe ser igual o superior a hace 10 años");
+      } else {
+        setFechaError("");
+      }
+    }
+    setForm({ ...form, [name]: value });
   };
 
   const handleVehiculoChange = (selectedOption) => {
@@ -131,7 +150,12 @@ const IncidenteForm = ({ onSave, initialData }) => {
           onChange={handleChange}
           className="w-full pl-3 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f3e7e7]"
           required
+          min={minDate}
+          max={maxDate}
         />
+        {fechaError && (
+          <p className="text-red-600 text-xs mt-1">{fechaError}</p>
+        )}
       </div>
 
       <div className="text-right">
