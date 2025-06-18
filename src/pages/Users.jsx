@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import UsuarioForm from "../components/Users/UserForm";
 import UsuarioTable from "../components/Users/UserTable";
 import { userService } from "../services/userService";
+import Swal from "sweetalert2";
 
 const Users = ({ userData }) => {
   const [usuarios, setUsuarios] = useState([]);
@@ -43,10 +44,10 @@ const Users = ({ userData }) => {
     try {
       if (editId) {
         await userService.actualizarUsuario(editId, formData);
-        alert("Usuario actualizado con éxito");
+        Swal.fire("Éxito", "Usuario actualizado con éxito", "success");
       } else {
         await userService.registrarUsuario(formData);
-        alert("Usuario registrado con éxito");
+        Swal.fire("Éxito", "Usuario registrado con éxito", "success");
       }
       setFormData({
         nombre: "",
@@ -59,10 +60,12 @@ const Users = ({ userData }) => {
       cargarUsuarios();
     } catch (error) {
       console.error("Error al guardar usuario:", error);
-      alert(
+      Swal.fire(
+        "Error",
         error.response?.data?.message ||
           error.message ||
-          "Error al procesar la solicitud"
+          "Error al procesar la solicitud",
+        "error"
       );
     }
   };
@@ -80,14 +83,23 @@ const Users = ({ userData }) => {
 
   const handleDelete = async (id) => {
     if (!id) {
-      alert("Error: ID de usuario no válido");
+      Swal.fire("Error", "ID de usuario no válido", "error");
       return;
     }
 
-    if (window.confirm("¿Estás seguro de eliminar este usuario?")) {
+    const result = await Swal.fire({
+      title: "¿Estás seguro de eliminar este usuario?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#4C0022",
+    });
+
+    if (result.isConfirmed) {
       try {
         await userService.eliminarUsuario(id);
-        alert("Usuario eliminado correctamente");
+        Swal.fire("Eliminado", "Usuario eliminado correctamente", "success");
         cargarUsuarios();
 
         if (editId === id) {
@@ -95,17 +107,19 @@ const Users = ({ userData }) => {
           setFormData({
             nombre: "",
             apellidos: "",
-            rol: "USER",
+            rol: "Empleado",
             correo: "",
             password: "",
           });
         }
       } catch (error) {
         console.error("Error al eliminar:", error);
-        alert(
+        Swal.fire(
+          "Error",
           error.response?.data?.message ||
             error.message ||
-            "Error al eliminar usuario"
+            "Error al eliminar usuario",
+          "error"
         );
       }
     }
